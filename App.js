@@ -1,21 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, FlatList, StatusBar } from 'react-native';
+import { Reddit } from './api/Reddit';
+import { RedditItem } from './components/RedditItem';
 
-export default function App() {
+StatusBar.setBarStyle('dark-content');
+
+const App = () => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetcReddit = async () => {
+      const results = await Reddit.get("javascript");
+      setItems(results);
+    };
+    fetcReddit();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <FlatList data={items} renderItem={({ item }) => <RedditItem item={item} />}></FlatList>
+    </SafeAreaView>
   );
-}
+
+};
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    backgroundColor: "#fff"
+  }
 });
